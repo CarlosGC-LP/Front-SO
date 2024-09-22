@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Cart } from "./Cart";
-import { GiHamburgerMenu } from "react-icons/gi";
 import { useUIStore } from "../store/ui-store";
 import { FaCartShopping, FaUser } from "react-icons/fa6";
 import { Link } from "react-router-dom";
