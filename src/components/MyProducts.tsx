@@ -32,11 +32,18 @@ export const MyProducts = () => {
     const [pedidos, setPedidos] = useState<Pedido[]>([]);
     const navigate = useNavigate();
     const isAuthenticated = useSessionStore((state) => state.isAuthenticated);
-    if (!isAuthenticated) {
-        navigate('/login');
-        return
-    }
+
+
     useEffect(() => {
+        if (!isAuthenticated) {
+            navigate('/login');
+            return
+        }
+
+    }, [isAuthenticated])
+
+    useEffect(() => {
+
         const fetchCompras = async () => {
             try {
                 const response = await fetch(`${apiUrl}/compras/`, {
@@ -75,7 +82,7 @@ export const MyProducts = () => {
             <div className="bg-purple-700 text-[1.6rem] leading-[1.5]">
                 <Header />
                 <main className="mx-auto container lg:h-screen bg-purple-700">
-                    <h1 className="text-center text-yellow-300 text-[2.5rem]  font-semibold py-8">Mis compras</h1>
+                    <h1 className="text-center text-yellow-300 text-[2.5rem]  font-semibold py-8">Compras de {user?.email}</h1>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 p-4">
                         {pedidos.map((pedido) => (
                             <div key={pedido.id} className="bg-purple-800 p-5 rounded-xl">

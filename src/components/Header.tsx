@@ -25,7 +25,7 @@ export const Header = () => {
             <nav className="py-4 flex flex-col  sm:flex-row justify-center items-center gap-8 bg-purple-800">
                 <Link to="/" className="text-[1.7rem] ">Tienda</Link>
                 <a className="text-white text-[1.7rem] 0hover:text-yellow-30 " href="#">Ofertas</a>
-                <Link to='/orders' className="text-white text-[1.7rem] hover:text-yellow-300 ">Mis compras</Link>
+                <Link to='/ordenes' className="text-white text-[1.7rem] hover:text-yellow-300 ">Mis compras</Link>
                 <button onClick={openSidebarMenu} type="button" className="flex justify-center  gap-2 items-center rounded-full text-white text-[1.7rem] hover:text-yellow-300">
                     <FaCartShopping size={24} className="text-white" />
                     Carrito

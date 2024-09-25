@@ -58,7 +58,7 @@ export const Cart = () => {
       })
       .then(data => {
 
-        navigate('/orders');
+        navigate('/ordenes');
         toast.warn('Compra exitosa', {
           position: "top-right",
           autoClose: 5000,
