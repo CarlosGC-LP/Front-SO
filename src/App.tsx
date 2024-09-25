@@ -5,10 +5,11 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
 import { Home } from './components/Home'
 import { Login } from './components/Login'
 import { Register } from './components/Register'
+import { MyProducts } from './components/MyProducts'
 
 function App() {
 
-
+ 
   return (
     <>
 
@@ -17,6 +18,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/orders" element={<MyProducts />} />
         </Routes>
       </Router>
 
