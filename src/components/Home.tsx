@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { Cart } from "./Cart";
 import { useUIStore } from "../store/ui-store";
-import { FaCartShopping, FaUser } from "react-icons/fa6";
-import { Link } from "react-router-dom";
 import { useCartStore } from "../store/cart-store";
 import { Header } from "./Header";
 
@@ -61,7 +59,7 @@ export const Home = () => {
                 <main className="mx-auto container lg:h-screen">
                 <h1 className="text-center text-yellow-300 text-[2.5rem]  font-semibold py-8">Nuestros productos</h1>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 p-4">
-                        {productos.map((producto, index) => (
+                        {productos.map((producto) => (
                             <div key={producto.id} className="bg-purple-800 p-5 rounded-xl">
                                 <img className="w-full max-h-[400px] rounded-xl" src={producto.urlImgProducto} alt={producto.nombre} />
                                 <div className="flex flex-col justify-center gap-3 py-4">
