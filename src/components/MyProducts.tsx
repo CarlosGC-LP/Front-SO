@@ -77,7 +77,7 @@ export const MyProducts = () => {
                 <main className="mx-auto container lg:h-screen bg-purple-700">
                     <h1 className="text-center text-yellow-300 text-[2.5rem]  font-semibold py-8">Mis compras</h1>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 p-4">
-                        {pedidos.map((pedido, index) => (
+                        {pedidos.map((pedido) => (
                             <div key={pedido.id} className="bg-purple-800 p-5 rounded-xl">
                                 <div className="flex flex-col justify-center gap-3 py-4">
                                     <p className="text-[1.5rem] text-white text-center">{formatFecha(pedido.fecha)}</p>
