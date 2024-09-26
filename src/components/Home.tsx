@@ -56,7 +56,7 @@ export const Home = () => {
         <div>
             <div className="bg-purple-700 text-[1.6rem] leading-[1.5]">
                 <Header />
-                <main className="mx-auto container lg:h-screen">
+                <main className="mx-auto container">
                 <h1 className="text-center text-yellow-300 text-[2.5rem]  font-semibold py-8">Nuestros productos</h1>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 p-4">
                         {productos.map((producto) => (
@@ -74,7 +74,6 @@ export const Home = () => {
                         ))}
                     </div>
                 </main>
-
                 <footer className="py-4 mt-8 bg-purple-800">
                     <p className="text-center text-[1.8rem] text-white font-sans">Grupo06 - Todos los derechos reservados</p>
                 </footer>

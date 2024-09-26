@@ -91,7 +91,7 @@ export const MyProducts = () => {
                                     <p className="text-[2.3rem] text-yellow-300 text-center border-4 border-yellow-300 rounded-xl">S/{pedido.total}</p>
                                     <p className="text-[2.3rem] text-yellow-300 text-center">Productos</p>
                                     <div className="grid grid-cols-4">
-                                        {pedido.detalles.map((producto) => (<img className="w-full h-32 rounded-xl object-cover" src={producto.producto.urlImgProducto} alt={producto.producto.nombre} />))}
+                                        {pedido.detalles.map((producto) => (<img key={producto.producto_id} className="w-full h-32 rounded-xl object-cover" src={producto.producto.urlImgProducto} alt={producto.producto.nombre} />))}
                                     </div>
                                 </div>
                             </div>
