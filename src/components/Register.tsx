@@ -1,77 +1,53 @@
 import { useState } from "react";
-import { Bounce, toast, ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faUser, faLock } from "@fortawesome/free-solid-svg-icons";
-import { useSessionStore } from "../store/user-store";
 import { useNavigate } from "react-router-dom";
 
 const initialForm = {
     email: "",
     password: "",
-    first_name: "",
-    last_name: "",
+    username: "",
 };
 
 export const Register = () => {
     const apiUrl = import.meta.env.VITE_API_URL;
     const [form, setForm] = useState(initialForm);
     const navigate = useNavigate();
-    const login = useSessionStore((state) => state.login);
 
-    const handleChangeForm = (e) => {
+    const handleChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setForm({ ...form, [name]: value });
     };
 
-    const onSubmit = (event) => {
+    const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        fetch(`${apiUrl}/api/register/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(form),
-        })
-            .then(response => {
-                if (!response.ok) {
-                    toast.warn('Error en el registro', {
-                        position: "top-right",
-                        autoClose: 5000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        theme: "dark",
-                        transition: Bounce,
-                    });
-                    throw new Error('Error en el registro');
-                }
-
-                return response.json();
-            })
-            .then(data => {
-                toast.success('Registro exitoso', {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    theme: "dark",
-                    transition: Bounce,
-                });
-                login({
-                    email: form.email,
-                    id: data.user.id,
-                    token: data.token,
-                });
-                navigate('/');
-            })
-            .catch(error => {
-                console.error('Error:', error);
+        try {
+            const response = await fetch(`${apiUrl}/auth/register/`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(form),
             });
+
+            if (!response.ok) {
+                toast.warn('Error al registrarse', { theme: "dark" });
+                return;
+            }
+            const data = await response.json();
+            console.log(data);
+            toast.success('Registro exitoso', {
+                theme: "dark"
+            });
+            navigate('/login');
+
+        } catch (error) {
+            console.error('Error:', error);
+            toast.error('Ocurrió un problema, inténtalo de nuevo más tarde', { theme: "dark" });
+        }
+
+
     };
 
     return (
@@ -100,24 +76,11 @@ export const Register = () => {
                     <div className="relative">
                         <FontAwesomeIcon icon={faUser} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
                         <input
-                            title="first name"
+                            title="Username"
                             onChange={handleChangeForm}
-                            name="first_name"
+                            name="username"
                             type="text"
-                            placeholder="Nombres"
-                            required
-                            className="pl-10 block w-full rounded-full border-gray-300 py-2 shadow-sm focus:ring-2 focus:ring-[#255873] sm:text-sm"
-                        />
-                    </div>
-
-                    <div className="relative">
-                        <FontAwesomeIcon icon={faUser} className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                        <input
-                            title="last name"
-                            onChange={handleChangeForm}
-                            name="last_name"
-                            type="text"
-                            placeholder="Apellidos"
+                            placeholder="username"
                             required
                             className="pl-10 block w-full rounded-full border-gray-300 py-2 shadow-sm focus:ring-2 focus:ring-[#255873] sm:text-sm"
                         />

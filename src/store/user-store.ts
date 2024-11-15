@@ -5,7 +5,7 @@ import { persist, PersistOptions } from 'zustand/middleware';
 
 interface User {
     email: string
-    id: number
+    id: string
     token:string
 }
 interface SessionState {

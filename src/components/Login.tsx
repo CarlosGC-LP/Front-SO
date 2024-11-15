@@ -20,12 +20,12 @@ export const Login = () => {
 
     const [form, setForm] = useState(initialForm);
 
-    const handleChangeForm = (e) => {
+    const handleChangeForm = (e:React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setForm({ ...form, [name]: value });
     };
 
-    const onSubmit = async (event) => {
+    const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         if (!form.email || !form.password) {
@@ -34,25 +34,26 @@ export const Login = () => {
         }
 
         try {
-            const response = await fetch(`${apiUrl}/api/login/`, {
+     
+
+            const response = await fetch(`${apiUrl}/auth/login/`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(form),
             });
 
             if (!response.ok) {
-                toast.warn('Credenciales incorrectas o error en el servidor', { theme: "dark" });
+                toast.warn('Credenciales incorrectas', { theme: "dark" });
                 return;
             }
 
             const data = await response.json();
-
-            login({ email: form.email, id: data.user.id, token: data.token });
+            login({ email: form.email, id: data.userId, token: data.token });
             toast.success('¡Bienvenido a SocialWave!', { theme: "dark" });
-            navigate('/feed');
+            navigate('/posts');
 
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error sdfasdf:', error);
             toast.error('Ocurrió un problema, inténtalo de nuevo más tarde', { theme: "dark" });
         }
     };
