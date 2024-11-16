@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Bounce, toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,7 +17,14 @@ const apiUrl = import.meta.env.VITE_API_URL;
 export const Login = () => {
     const login = useSessionStore((state) => state.login);
     const navigate = useNavigate();
-
+    const user = useSessionStore((state) => state.user);
+    useEffect(() => {
+        if(user?.token) {
+            navigate('/posts');
+        }
+    
+    }, [user])
+    
     const [form, setForm] = useState(initialForm);
 
     const handleChangeForm = (e:React.ChangeEvent<HTMLInputElement>) => {
@@ -57,6 +64,8 @@ export const Login = () => {
             toast.error('Ocurrió un problema, inténtalo de nuevo más tarde', { theme: "dark" });
         }
     };
+
+ 
 
     return (
         <div className="h-screen flex items-center justify-center bg-[#255873]">

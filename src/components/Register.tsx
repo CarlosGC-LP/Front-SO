@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEnvelope, faUser, faLock } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { useSessionStore } from "../store/user-store";
 
 const initialForm = {
     email: "",
@@ -15,6 +16,13 @@ export const Register = () => {
     const apiUrl = import.meta.env.VITE_API_URL;
     const [form, setForm] = useState(initialForm);
     const navigate = useNavigate();
+    const user = useSessionStore((state) => state.user);
+    useEffect(() => {
+        if(user?.token) {
+            navigate('/posts');
+        }
+    
+    }, [user])
 
     const handleChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;

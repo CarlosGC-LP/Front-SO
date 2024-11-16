@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 import { useSessionStore } from '../store/user-store';
 import { Post } from '../interfaces/post';
 import { usePostStore } from '../store/post-store';
+import { useNavigate } from 'react-router-dom';
 const initialForm = {
     title: "",
     content: "",
@@ -20,11 +21,15 @@ export const CreatePost = () => {
         const { name, value } = e.target;
         setForm({ ...form, [name]: value });
     };
-
+    const navigate = useNavigate();
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         try {
+            if (!user?.token) {
+                navigate('/login');
+                return
+            }
             const response = await fetch(`${apiUrl}/api/posts`, {
                 method: 'POST',
                 headers: {
@@ -63,11 +68,11 @@ export const CreatePost = () => {
             <h4 className='text-xl'>Agrega un post</h4>
             <div>
                 <label htmlFor="title" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Agrega un titulo del Post</label>
-                <input required onChange={handleChangeForm} type="text" name='title' id="title" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Hoy es viernes!" />
+                <input required onChange={handleChangeForm} type="text" name='title' id="title" className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:bg-blue-100 bg-white text-black" placeholder="#Es viernes!" />
             </div>
             <div>
                 <label htmlFor="message" className="block mb-2  text-sm font-medium text-gray-900 dark:text-white">Agrega un mensaje del post</label>
-                <textarea required id="message" onChange={handleChangeForm} name='content' rows={3} className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="¿Que estas pensando?"></textarea>
+                <textarea required id="message" onChange={handleChangeForm} name='content' rows={3} className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:bg-blue-100 bg-white text-black" placeholder="¿Que estas pensando?"></textarea>
             </div>
             <div className='flex justify-end'>
                 <button type="submit" className="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Postear</button>

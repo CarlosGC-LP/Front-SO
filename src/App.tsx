@@ -5,7 +5,6 @@ import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-d
 import { Login } from './components/Login'
 import { Register } from './components/Register'
 import { Posts } from './components/Posts'
-import { PostDetails } from './components/PostDetails'
 import { MyPosts } from './components/MyPosts'
 
 function App() {
@@ -20,7 +19,6 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/myposts" element={<MyPosts />} />
-          <Route path="/posts/:id" element={<PostDetails />} />
         </Routes>
       </Router>
     </>

@@ -5,12 +5,14 @@ import { useCommentStore } from '../store/comment-store';
 import { useSessionStore } from '../store/user-store';
 import { toast } from 'react-toastify';
 import { usePostStore } from '../store/post-store';
+import { DetailsAuthor } from './DetailsAuthor';
+import { useNavigate } from 'react-router-dom';
 interface Props {
     commentsData: Comment[]
-    postId:string
+    postId: string
 }
 const apiUrl = import.meta.env.VITE_API_URL;
-export const Comments = ({ commentsData,postId }: Props) => {
+export const Comments = ({ commentsData, postId }: Props) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isResponseOpen, setIsResponseOpen] = useState(false);
     const setIsEditComment = useCommentStore((state) => state.setIsEditComment);
@@ -19,7 +21,8 @@ export const Comments = ({ commentsData,postId }: Props) => {
     const selectedComment = useCommentStore((state) => state.comment);
     const closeCommentMenu = useCommentStore((state) => state.closeCommentMenu);
     const user = useSessionStore((state) => state.user);
-    const inputRef = useRef<HTMLInputElement>(null);
+    const inputRef = useRef<HTMLTextAreaElement>(null);
+    const navigate = useNavigate();
     const toggleAccordion = () => {
         setIsOpen(!isOpen);
     };
@@ -28,7 +31,7 @@ export const Comments = ({ commentsData,postId }: Props) => {
         setIsResponseOpen(!isResponseOpen);
     }
 
-    const handleChangeComment = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChangeComment = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setIsEditComment({ ...selectedComment, content: e.target.value });
     }
 
@@ -84,6 +87,11 @@ export const Comments = ({ commentsData,postId }: Props) => {
 
     const onSubmitCreateComment = async () => {
         const inputValue = inputRef.current?.value;
+
+        if (!user?.token) {
+            navigate('/login');
+            return
+        }
         if (!inputValue) {
             toast.warn('Debes agregar un comentario', { theme: "dark" });
             return;
@@ -135,25 +143,35 @@ export const Comments = ({ commentsData,postId }: Props) => {
 
     }
 
-
+    function getFirstLetterCapitalized(word: string | undefined | null): string {
+        if (!word || word.trim() === "") {
+            return ""; // Manejo de palabras vacías o valores nulos/indefinidos
+        }
+        return word.trim().charAt(0).toUpperCase(); // Obtiene y capitaliza la primera letra
+    }
     return (
         <>
-            <div>
+            <div className='mb-2'>
                 <button onClick={toggleCreateResponse} type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Responder</button>
             </div>
             {isResponseOpen &&
                 <>
-                    <input ref={inputRef} type="text" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Agrega un comentario" />
-                    <div className='flex justify-end'>
+                    <textarea
+                        ref={inputRef}
+                        placeholder="Escribe tu respuesta..."
+                        className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:bg-blue-100 bg-white text-black"
+                    ></textarea>
+
+                    <div className='flex justify-end mb-2'>
                         <button onClick={onSubmitCreateComment} type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Responder</button>
                         <button onClick={cleanComment} type="button" className="py-2.5 px-5 me-2  text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Cancelar</button>
                     </div>
 
                 </>
             }
-            <div  id="accordion-collapse" data-accordion="collapse">
+            <div id="accordion-collapse" data-accordion="collapse">
                 <h2 id="accordion-collapse-heading-1">
-                    <button onClick={toggleAccordion} type="button" className="flex items-center justify-between w-full p-4 font-medium rtl:text-right text-gray-500 border border-b-0 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-800 dark:border-gray-700 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
+                    <button onClick={toggleAccordion} type="button" className="flex items-center justify-between w-full p-4 font-medium rtl:text-right text-gray-500 border border-b-1 border-gray-200 rounded-t-xl focus:ring-4 focus:ring-gray-200 gap-3" data-accordion-target="#accordion-collapse-body-1" aria-expanded="true" aria-controls="accordion-collapse-body-1">
                         <span>Respuestas</span>
                         <svg data-accordion-icon className={`w-4 h-4 shrink-0 transition-transform ${isOpen ? "rotate-180" : ""
                             }`} aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
@@ -163,27 +181,28 @@ export const Comments = ({ commentsData,postId }: Props) => {
                 </h2>
             </div>
             <div id="accordion-collapse-body-1" className={`${isOpen ? "block" : "hidden"}`} aria-labelledby="accordion-collapse-heading-1">
-                <div className="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-800">
-                    <h3>Comentarios:</h3>
+                <div className="p-5 border border-b-1 border-gray-200 ">
                     <ul>
-                        {commentsData.map((comment) => (
-                            <li className='py-12 px-4  mb-4 relative flex flex-col gap-2' key={comment._id}>
-                                <p><em>Por: {comment.author} - {new Date(comment.createdAt).toLocaleString()}</em></p>
+                        {commentsData.length > 0 ? commentsData.map((comment) => (
+                            <li className='py-12 px-4  mb-4 relative flex flex-col gap-2 border rounded-md' key={comment._id}>
+
+                                <DetailsAuthor authorId={comment.author} />
+                                <p className='text-black'><em>Comentado el: <strong>@</strong> {new Date(comment.createdAt).toLocaleString()}</em></p>
                                 {comment._id === selectedComment._id ? <>
-                                    <input name='comment_message' defaultValue={comment.content} onChange={handleChangeComment} type="text" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Agrega un comentario" />
+                                    <textarea name='comment_message' defaultValue={comment.content} onChange={handleChangeComment} className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:bg-blue-100 bg-white text-black" placeholder="Agrega un comentario" />
                                     <div className='flex justify-end'>
                                         <button onClick={onSubmitUpdateComment} type="button" className="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Guardar</button>
                                         <button onClick={cleanComment} type="button" className="py-2.5 px-5 me-2  text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Cancelar</button>
                                     </div>
                                 </> :
                                     <>
-                                        <ActionsComment selectedComment={comment} />
-                                        <p>{comment.content}</p>
+                                        {user?.id === comment.author && <ActionsComment selectedComment={comment} />}
+                                        <p className='text-black'>{comment.content}</p>
                                     </>
                                 }
 
                             </li>
-                        ))}
+                        )) : <li className='text-black font-bold text-center'>Sin comentarios por ahora</li>}
                     </ul>
 
                 </div>
