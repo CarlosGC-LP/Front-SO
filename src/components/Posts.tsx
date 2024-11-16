@@ -8,7 +8,7 @@ import { usePostStore } from '../store/post-store';
 import { Comments } from './Comments';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCommentSms } from '@fortawesome/free-solid-svg-icons';
+import { faCommentSms, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { DetailsAuthor } from './DetailsAuthor';
 const apiUrl = import.meta.env.VITE_API_URL;
 export const Posts = () => {
@@ -111,7 +111,7 @@ export const Posts = () => {
       <div>
         <h1 className='text-4xl text-center font-semibold mb-8'>Feed de SocialWave</h1>
         <ul className='flex flex-col gap-2'>
-          {posts.map((post) => (
+          {posts.length > 0 ? posts.map((post) => (
             <li key={post._id} className='flex items-center justify-center'>
               <div className="max-w-[1000px] w-full px-4 py-8 bg-white border rounded-lg shadow-md relative">
                 <DetailsAuthor authorId={post.author} />
@@ -129,7 +129,7 @@ export const Posts = () => {
                     <strong className='text-black'># {post.title}</strong>
                     <br />
                     <p className='text-black'>{post.content}</p>
-                   { user?.id === post.author && <ActionsPost selectedPost={post} />}
+                    {user?.id === post.author && <ActionsPost selectedPost={post} />}
                   </>
                 )}
                 <div className="flex items-center mt-4 space-x-6 mb-4">
@@ -145,7 +145,10 @@ export const Posts = () => {
               </div>
 
             </li>
-          ))}
+          )) : <li className='mx-auto max-w-[1000px] w-full flex flex-col justify-center items-center gap-8 border-dashed border-2 rounded-md p-8'>
+            <h2 className='text-center text-3xl '>Aún no se encuentran post disponibles</h2>
+            <FontAwesomeIcon className='h-16 w-16' icon={faSearch} />
+          </li>}
 
         </ul>
       </div>

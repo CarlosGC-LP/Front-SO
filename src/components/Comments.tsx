@@ -45,6 +45,7 @@ export const Comments = ({ commentsData, postId }: Props) => {
         })
         closeCommentMenu();
         toggleCreateResponse();
+        setIsOpen(true);
     }
 
     const onSubmitUpdateComment = async () => {
@@ -143,12 +144,7 @@ export const Comments = ({ commentsData, postId }: Props) => {
 
     }
 
-    function getFirstLetterCapitalized(word: string | undefined | null): string {
-        if (!word || word.trim() === "") {
-            return ""; // Manejo de palabras vacías o valores nulos/indefinidos
-        }
-        return word.trim().charAt(0).toUpperCase(); // Obtiene y capitaliza la primera letra
-    }
+ 
     return (
         <>
             <div className='mb-2'>
