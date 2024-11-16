@@ -1,17 +1,20 @@
-import React, { Dispatch, useState } from 'react'
+import React, { useState } from 'react'
 import { toast } from 'react-toastify';
 import { useSessionStore } from '../store/user-store';
 import { Post } from '../interfaces/post';
+import { usePostStore } from '../store/post-store';
 const initialForm = {
     title: "",
     content: "",
 };
 
 const apiUrl = import.meta.env.VITE_API_URL;
-export const CreatePost = ({ setPosts }: { setPosts: Dispatch<React.SetStateAction<Post[]>> }) => {
+export const CreatePost = () => {
     const [form, setForm] = useState(initialForm);
     const user = useSessionStore((state) => state.user);
 
+    const posts = usePostStore((state) => state.posts);
+    const setPosts = usePostStore((state) => state.setPosts);
 
     const handleChangeForm = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -44,8 +47,8 @@ export const CreatePost = ({ setPosts }: { setPosts: Dispatch<React.SetStateActi
             const data = await response.json();
             console.log(data)
             setForm(initialForm);
-
-            setPosts((prevState: Post[]) => [...prevState, data]);
+            const addPost = data
+            setPosts([...posts, addPost]);
             toast.success('Post creado  en SocialWave!', { theme: "dark" });
 
         } catch (err) {

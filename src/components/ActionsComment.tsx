@@ -1,41 +1,42 @@
 import { faDeleteLeft, faEdit } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { usePostStore } from '../store/post-store'
-import { Post } from '../interfaces/post';
 import { useSessionStore } from '../store/user-store';
 import { toast } from 'react-toastify';
 import { useState } from 'react';
+import { Comment } from '../interfaces/comment';
+import { useCommentStore } from '../store/comment-store';
 
 
 const apiUrl = import.meta.env.VITE_API_URL;
-export const ActionsPost = ({ selectedPost }: { selectedPost: Post }) => {
-    const post = usePostStore((state) => state.post);
-    const posts = usePostStore((state) => state.posts);
-    const setPosts = usePostStore((state) => state.setPosts);
-    const setIsEditPost = usePostStore((state) => state.setIsEdit);
-    const user = useSessionStore((state) => state.user);
+export const ActionsComment = ({ selectedComment }: { selectedComment: Comment }) => {
     const [isOpen, setIsOpen] = useState(false)
+    const user = useSessionStore((state) => state.user);
+    const posts = usePostStore((state) => state.posts);
+    const setIsEditComment = useCommentStore((state) => state.setIsEditComment)
+    const setPosts = usePostStore((state) => state.setPosts);
     const toggleModal = () => {
         setIsOpen(!isOpen);
     }
 
-    const onDeletePost = async () => {
+    const onDeleteComment = async () => {
         try {
-            const response = await fetch(`${apiUrl}/api/posts/${selectedPost._id}`, {
+            const response = await fetch(`${apiUrl}/api/posts/${selectedComment.postId}/comments/${selectedComment._id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${user?.token}`, // Agrega el token si es necesario
                 }
             });
+            console.log(response)
 
             if (!response.ok) {
                 toast.warn('No se pudo eliminar el post', { theme: "dark" });
                 return;
-
             }
+
             const data = await response.json();
-            const updatedPosts = posts.filter((post) => post._id !== selectedPost._id);
-            setPosts(updatedPosts);
+            const updatePost = posts.map((post) => post._id === selectedComment.postId ? { ...post, comments: post.comments.filter((el) => el._id !== selectedComment._id) } : post)
+            setPosts(updatePost);
             toast.success('Post Eliminado  en SocialWave!', { theme: "dark" });
             toggleModal()
 
@@ -43,13 +44,14 @@ export const ActionsPost = ({ selectedPost }: { selectedPost: Post }) => {
             toast.error('Ocurrió un problema, inténtalo de nuevo más tarde', { theme: "dark" });
         }
     }
-    const onEditPost = () => {
-        setIsEditPost(selectedPost)
+
+    const onEditComment = () => {
+        setIsEditComment(selectedComment)
     }
     return (
         <div data-dial-init className="absolute end-6 top-6 group">
-            <div id="speed-dial-menu-square" className={`flex-col items-center ${isOpen ? "flex" : "hidden"} mb-4 space-y-2`}>
-                <button onClick={onEditPost} type="button" data-tooltip-target="tooltip-share" data-tooltip-placement="left" className="flex justify-center items-center  w-10 h-10 text-gray-500 hover:text-gray-900 bg-white rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
+            <div id="speed-dial-menu-square" className={`flex-col  items-center ${isOpen ? "flex" : "hidden"} mb-4 space-y-2`}>
+                <button onClick={onEditComment} type="button" data-tooltip-target="tooltip-share" data-tooltip-placement="left" className="flex justify-center items-center  w-10 h-10 text-gray-500 hover:text-gray-900 bg-white rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
                     <FontAwesomeIcon icon={faEdit} className=" text-gray-400" />
                     <span className="sr-only">Edit</span>
                 </button>
@@ -57,7 +59,7 @@ export const ActionsPost = ({ selectedPost }: { selectedPost: Post }) => {
                     Edit
                     <div className="tooltip-arrow" data-popper-arrow></div>
                 </div>
-                <button onClick={onDeletePost} type="button" data-tooltip-target="tooltip-print" data-tooltip-placement="left" className="flex justify-center items-center  w-10 h-10 text-gray-500 hover:text-gray-900 bg-white rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
+                <button onClick={onDeleteComment} type="button" data-tooltip-target="tooltip-print" data-tooltip-placement="left" className="flex justify-center items-center  w-10 h-10 text-gray-500 hover:text-gray-900 bg-white rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
                     <FontAwesomeIcon icon={faDeleteLeft} className=" text-gray-400" />
                     <span className="sr-only">Delete</span>
                 </button>
